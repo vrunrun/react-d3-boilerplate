@@ -20,12 +20,45 @@ class D3Chart {
     vis.x = d3.scaleLinear().range([0, WIDTH]);
     vis.y = d3.scaleLinear().range([HEIGHT, 0]);
 
+    // Axes groups
+    vis.xAxisGroup = vis.g
+      .append("g")
+      .attr("transform", `translate(0, ${HEIGHT})`);
+    vis.yAxisGroup = vis.g.append("g");
+
+    // X-axis label
+    vis.g
+      .append("text")
+      .attr("x", WIDTH / 2)
+      .attr("y", HEIGHT + 40)
+      .attr("font-size", 20)
+      .attr("text-anchor", "middle")
+      .text("Age");
+
+    // Y-axis label
+    vis.g
+      .append("text")
+      .attr("x", -HEIGHT / 2)
+      .attr("y", -50)
+      .attr("transform", "rotate(-90)")
+      .attr("font-size", 20)
+      .attr("text-anchor", "middle")
+      .text("Height (cm)");
+
     vis.update(data);
   }
 
   update(data) {
     let vis = this;
     vis.data = data;
+
+    // Axis generators
+    const xAxisCall = d3.axisBottom(vis.x);
+    const yAxisCall = d3.axisLeft(vis.y);
+
+    // Call axis generators
+    vis.xAxisGroup.call(xAxisCall);
+    vis.yAxisGroup.call(yAxisCall);
 
     // Scale
     vis.x.domain([0, d3.max(vis.data, d => Number(d.age))]);
