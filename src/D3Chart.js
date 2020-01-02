@@ -8,8 +8,6 @@ class D3Chart {
   constructor(element, data) {
     let vis = this;
 
-    vis.data = data;
-
     vis.g = d3
       .select(element)
       .append("svg")
@@ -22,15 +20,35 @@ class D3Chart {
     vis.x = d3.scaleLinear().range([0, WIDTH]);
     vis.y = d3.scaleLinear().range([HEIGHT, 0]);
 
-    vis.update();
+    vis.update(data);
   }
 
-  update() {
+  update(data) {
     let vis = this;
+    vis.data = data;
 
     // Scale
-    vis.x.domain([0, d => d3.max(vis.data, d => Number(d.age))]);
-    vis.y.domain([0, d => d3.max(vis.data, d => Number(d.height))]);
+    vis.x.domain([0, d3.max(vis.data, d => Number(d.age))]);
+    vis.y.domain([0, d3.max(vis.data, d => Number(d.height))]);
+
+    // JOIN
+    const circles = vis.g.selectAll("circle").data(vis.data, d => d.name);
+    // console.log(circles);
+
+    // EXIT
+    circles.exit().remove();
+
+    // UPDATE
+    circles.attr("cx", d => vis.x(d.age)).attr("cy", d => vis.y(d.height));
+
+    // ENTER
+    circles
+      .enter()
+      .append("circle")
+      .attr("cx", d => vis.x(Number(d.age)))
+      .attr("cy", d => vis.y(Number(d.height)))
+      .attr("r", 5)
+      .attr("fill", "grey");
   }
 }
 

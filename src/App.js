@@ -14,9 +14,7 @@ class App extends Component {
 
   componentWillMount() {
     json("https://udemy-react-d3.firebaseio.com/children.json")
-      .then(data => {
-        this.setState({ data });
-      })
+      .then(data => this.setState({ data }))
       .catch(err => console.log(err));
   }
 
