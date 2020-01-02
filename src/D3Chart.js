@@ -6,9 +6,9 @@ const HEIGHT = 300 - MARGIN.TOP - MARGIN.BOTTOM;
 
 class D3Chart {
   constructor(element, data) {
-    console.log(data);
-
     let vis = this;
+
+    vis.data = data;
 
     vis.g = d3
       .select(element)
@@ -18,11 +18,19 @@ class D3Chart {
       .append("g")
       .attr("transform", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
+    // Scale
+    vis.x = d3.scaleLinear().range([0, WIDTH]);
+    vis.y = d3.scaleLinear().range([HEIGHT, 0]);
+
     vis.update();
   }
 
   update() {
     let vis = this;
+
+    // Scale
+    vis.x.domain([0, d => d3.max(vis.data, d => Number(d.age))]);
+    vis.y.domain([0, d => d3.max(vis.data, d => Number(d.height))]);
   }
 }
 
