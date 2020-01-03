@@ -5,6 +5,25 @@ import Button from "react-bootstrap/Button";
 import { FormControl } from "react-bootstrap";
 
 export default class Table extends Component {
+  state = {
+    name: "",
+    height: "",
+    age: ""
+  };
+
+  handleSubmit = () => {
+    this.props.updateData([...this.props.data, this.state]);
+    this.setState({
+      name: "",
+      height: "",
+      age: ""
+    });
+  };
+
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
   handleRemove = event => {
     const newData = this.props.data.filter(d => {
       return d.name !== event.target.name;
@@ -40,19 +59,35 @@ export default class Table extends Component {
       <div>
         <Row>
           <Col xs={3}>
-            <FormControl placeholder={"Name"} name={"name"} />
+            <FormControl
+              placeholder={"Name"}
+              name={"name"}
+              value={this.state.name}
+              onChange={this.handleChange}
+            />
           </Col>
           <Col xs={3}>
-            <FormControl placeholder={"Height"} name={"height"} />
+            <FormControl
+              placeholder={"Height"}
+              name={"height"}
+              value={this.state.height}
+              onChange={this.handleChange}
+            />
           </Col>
           <Col xs={3}>
-            <FormControl placeholder={"Age"} name={"age"} />
+            <FormControl
+              placeholder={"Age"}
+              name={"age"}
+              value={this.state.age}
+              onChange={this.handleChange}
+            />
           </Col>
           <Col>
             <Button
               variant={"primary"}
               type={"button"}
               style={{ width: "100%" }}
+              onClick={this.handleSubmit}
             >
               Add
             </Button>
