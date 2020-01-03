@@ -52,36 +52,46 @@ class D3Chart {
     let vis = this;
     vis.data = data;
 
+    // Scale
+    vis.x.domain([0, d3.max(vis.data, d => Number(d.age))]);
+    vis.y.domain([0, d3.max(vis.data, d => Number(d.height))]);
+
     // Axis generators
     const xAxisCall = d3.axisBottom(vis.x);
     const yAxisCall = d3.axisLeft(vis.y);
 
     // Call axis generators
-    vis.xAxisGroup.call(xAxisCall);
-    vis.yAxisGroup.call(yAxisCall);
-
-    // Scale
-    vis.x.domain([0, d3.max(vis.data, d => Number(d.age))]);
-    vis.y.domain([0, d3.max(vis.data, d => Number(d.height))]);
+    vis.xAxisGroup.transition(1000).call(xAxisCall);
+    vis.yAxisGroup.transition(1000).call(yAxisCall);
 
     // JOIN
     const circles = vis.g.selectAll("circle").data(vis.data, d => d.name);
     // console.log(circles);
 
     // EXIT
-    circles.exit().remove();
+    circles
+      .exit()
+      .transition(1000)
+      .attr("cy", vis.y(0))
+      .remove();
 
     // UPDATE
-    circles.attr("cx", d => vis.x(d.age)).attr("cy", d => vis.y(d.height));
+    circles
+      .transition(1000)
+      .attr("cx", d => vis.x(d.age))
+      .attr("cy", d => vis.y(d.height));
 
     // ENTER
     circles
       .enter()
       .append("circle")
-      .attr("cx", d => vis.x(Number(d.age)))
-      .attr("cy", d => vis.y(Number(d.height)))
+      .attr("cy", vis.y(0))
+      .attr("cx", d => vis.x(d.age))
       .attr("r", 5)
-      .attr("fill", "grey");
+      .attr("fill", "grey")
+      .on("click", d => vis.updateName(d.name))
+      .transition(1000)
+      .attr("cy", d => vis.y(d.height));
   }
 }
 
