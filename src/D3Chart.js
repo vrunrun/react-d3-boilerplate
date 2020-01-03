@@ -5,8 +5,9 @@ const WIDTH = 500 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT = 300 - MARGIN.TOP - MARGIN.BOTTOM;
 
 class D3Chart {
-  constructor(element, data) {
+  constructor(element, data, updateName) {
     let vis = this;
+    vis.updateName = updateName;
 
     vis.g = d3
       .select(element)
